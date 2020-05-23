@@ -7,3 +7,10 @@ Some simple if statements are used to give bot to possibility to respond to hi.
 An else statement will make clear that the question / command is not recognized by Simpie. 
 Simpie is still in an early phase, and is not more intelligent than his friend SimpleBot. 
 Simpie is written in Python instead of the Batch used to write Simplebot
+
+Devblog: ver 0.1.0
+Simpie has now been compiled to an alpha state executable. 
+impie can now be downloaded and executed on almost every windows computer. 
+In following updated MacOS support will follow, and after that Linux support.
+A funny little icon was also added to the repository. This will be the icon of Simpie for now. 
+The original png was also included in this update.

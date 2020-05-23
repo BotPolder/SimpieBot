@@ -1,0 +1,1 @@
+pyinstaller -i "bot.ico" BPSourceCode.py
