@@ -1,0 +1,9 @@
+Devblog: ver 0.0.1 
+Let’s get this project of the ground
+Multiple definition written. Simple while loop that keeps the conversation going. 
+Bot can now open google chrome and fire fox if installed in standard directory. 
+Bot can also print a list of all .exe installed in C:\Program Files\\. 
+Some simple if statements are used to give bot to possibility to respond to hi. 
+An else statement will make clear that the question / command is not recognized by Simpie. 
+Simpie is still in an early phase, and is not more intelligent than his friend SimpleBot. 
+Simpie is written in Python instead of the Batch used to write Simplebot
