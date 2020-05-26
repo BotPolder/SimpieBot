@@ -1,1 +1,88 @@
-pyinstaller -i "bot.ico" BPSourceCode.py
+Place the file source code and the .ico in desktop. (or any file you wish)
+shift + right click the folde and open in powershell.
+pyinstaller -n SimpieBot -i "bot.ico" -F SimpieSourceCode.py
+-F is for a single file
+the proces can take up to 2 min so give it some time.
+after it is done it will show the normal powershell command like this one:
+PS C:\Users\Qwert\OneDrive\Bureaublad\bot>
+
+After that is shown the file dist should be created.
+In this file you will find your .exe if you used -F otherwise this will be a folder.
+If it seems to be stuck pressing enter will give the powershell a little push ;)
+
+Using the pyinstaller command without -F will speed up the proces but the exe file will be in a folder
+instead one big .exe file.
+
+Overall will the file perform better when it is compiled using the pyinstaller WITHOUT -F but the advantages of using -F
+are also very attrative.
+
+
+The powershell window \ command should look something like this:
+
+PS C:\Users\Qwert\OneDrive\Bureaublad\bot> pyinstaller -n SimpieBot -i "bot.ico" -F SimpieSourceCode.py
+
+344 INFO: PyInstaller: 3.6
+344 INFO: Python: 3.8.3
+344 INFO: Platform: Windows-10-10.0.18362-SP0
+348 INFO: wrote C:\Users\Qwert\OneDrive\Bureaublad\bot\SimpieBot.spec
+348 INFO: UPX is not available.
+362 INFO: Extending PYTHONPATH with paths
+['C:\\Users\\Qwert\\OneDrive\\Bureaublad\\bot',
+ 'C:\\Users\\Qwert\\OneDrive\\Bureaublad\\bot']
+362 INFO: checking Analysis
+362 INFO: Building Analysis because Analysis-00.toc is non existent
+362 INFO: Initializing module dependency graph...
+370 INFO: Caching module graph hooks...
+421 INFO: Analyzing base_library.zip ...
+8492 INFO: Processing pre-find module path hook   distutils
+40259 INFO: distutils: retargeting to non-venv dir 'c:\\users\\qwert\\appdata\\local\\programs\\python\\python38\\lib'
+51139 INFO: Caching module dependency graph...
+51381 INFO: running Analysis Analysis-00.toc
+51391 INFO: Adding Microsoft.Windows.Common-Controls to dependent assemblies of final executable
+  required by c:\users\qwert\appdata\local\programs\python\python38\python.exe
+51569 INFO: Analyzing C:\Users\Qwert\OneDrive\Bureaublad\bot\SimpieSourceCode.py
+51581 INFO: Processing module hooks...
+51581 INFO: Loading module hook "hook-distutils.py"...
+51590 INFO: Loading module hook "hook-encodings.py"...
+51754 INFO: Loading module hook "hook-lib2to3.py"...
+51771 INFO: Loading module hook "hook-pydoc.py"...
+51779 INFO: Loading module hook "hook-sysconfig.py"...
+51779 INFO: Loading module hook "hook-xml.etree.cElementTree.py"...
+51779 INFO: Loading module hook "hook-xml.py"...
+51971 INFO: Loading module hook "hook-_tkinter.py"...
+52550 INFO: checking Tree
+52550 INFO: Building Tree because Tree-00.toc is non existent
+52550 INFO: Building Tree Tree-00.toc
+53110 INFO: checking Tree
+53110 INFO: Building Tree because Tree-01.toc is non existent
+53110 INFO: Building Tree Tree-01.toc
+53234 INFO: Looking for ctypes DLLs
+53310 INFO: Analyzing run-time hooks ...
+53314 INFO: Including run-time hook 'pyi_rth__tkinter.py'
+53332 INFO: Including run-time hook 'pyi_rth_multiprocessing.py'
+53364 INFO: Looking for dynamic libraries
+54259 INFO: Looking for eggs
+54259 INFO: Using Python library c:\users\qwert\appdata\local\programs\python\python38\python38.dll
+54260 INFO: Found binding redirects:
+[]
+54261 INFO: Warnings written to C:\Users\Qwert\OneDrive\Bureaublad\bot\build\SimpieBot\warn-SimpieBot.txt
+54373 INFO: Graph cross-reference written to C:\Users\Qwert\OneDrive\Bureaublad\bot\build\SimpieBot\xref-SimpieBot.html
+54461 INFO: checking PYZ
+54461 INFO: Building PYZ because PYZ-00.toc is non existent
+54461 INFO: Building PYZ (ZlibArchive) C:\Users\Qwert\OneDrive\Bureaublad\bot\build\SimpieBot\PYZ-00.pyz
+55750 INFO: Building PYZ (ZlibArchive) C:\Users\Qwert\OneDrive\Bureaublad\bot\build\SimpieBot\PYZ-00.pyz completed successfully.
+55789 INFO: checking PKG
+55789 INFO: Building PKG because PKG-00.toc is non existent
+55789 INFO: Building PKG (CArchive) PKG-00.pkg
+77384 INFO: Building PKG (CArchive) PKG-00.pkg completed successfully.
+94101 INFO: Bootloader c:\users\qwert\appdata\local\programs\python\python38\lib\site-packages\PyInstaller\bootloader\Windows-64bit\run.exe
+94101 INFO: checking EXE
+94101 INFO: Building EXE because EXE-00.toc is non existent
+94111 INFO: Building EXE from EXE-00.toc
+94268 INFO: Copying icons from ['bot.ico']
+94391 INFO: Writing RT_GROUP_ICON 0 resource with 20 bytes
+94391 INFO: Writing RT_ICON 1 resource with 4264 bytes
+94401 INFO: Updating manifest in C:\Users\Qwert\OneDrive\Bureaublad\bot\build\SimpieBot\run.exe.481xxpke
+94492 INFO: Updating resource type 24 name 1 language 0
+94501 INFO: Appending archive to EXE C:\Users\Qwert\OneDrive\Bureaublad\bot\dist\SimpieBot.exe
+94621 INFO: Building EXE from EXE-00.toc completed successfully.

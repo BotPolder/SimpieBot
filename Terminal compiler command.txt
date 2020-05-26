@@ -1,0 +1,59 @@
+To get one single file:
+Pyinstaller -n SimpieBot -i bot.ico SimpieSourceCode.py
+To get admin permission: --uac- admin
+Pyinstaller -n SimpieBot -i bot.ico SimpieSourceCode.py
+
+
+Seems like the Pyinstaller for Mac is not working lets try py2app:
+
+## create a virtual environment.
+pip install virtualenv
+virtualenv venv --system-site-packages
+source venv/bin/activate
+pip install py2app==0.13
+
+## I used
+Sudo pip3 install py2app==0.13
+
+## Run into allias mode
+python setup.py py2app -A
+./dist/SimpieBot.app/Contents/MacOs/SimpieBot
+
+## Delete the folders created by the allias moded
+python setup.py py2app
+
+
+## seems like the above did not work for me...
+## how to fix...
+1: uninstall pip2app:
+sudo pip uninstall pip2app
+2: reinstall but for python3
+pip3 install pip2app
+## my installed version was 0.21 (apparently ver 0.13 is more stable) but ver 0.21 worked for me.
+3: I placed SimpieSourceCode.py and setup.py and bot.ico on my desktop in a folder called buildfile.
+cd desktop
+cd buildfile
+python3 setup.py py2app
+
+## my original setup.py
+from setuptools import setup
+setup(
+    app=["SimpieSourceCode.py"],
+setup_requires=['py2app'],
+)
+
+## my new setup.py
+from setuptools import setup
+APP = ['SimpieSourceCode.py']
+DATA_FILES = []
+OPTIONS = {
+ 'iconfile':'bot.ico',
+ 'argv_emulation': True,
+ 'packages': ['certifi'],
+}
+setup(
+    app=APP,
+    data_files=DATA_FILES,
+    options={'py2app': OPTIONS},
+    setup_requires=['py2app'],
+)

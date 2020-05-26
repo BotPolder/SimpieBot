@@ -14,3 +14,35 @@ impie can now be downloaded and executed on almost every windows computer.
 In following updated MacOS support will follow, and after that Linux support.
 A funny little icon was also added to the repository. This will be the icon of Simpie for now. 
 The original png was also included in this update.
+
+Devblog ver 0.1.1
+Getting simpie crosplatform compiled
+I had some issues with pyinstaller. 
+Pyinstaller worked fine for my windows version of Simpie. 
+But whilst trying to get it to work for Mac (get Simpie on the MacOS platform) 
+I ran into some issues. At first terminal gave me a hard time with 
+the pip installer. After finding a solution to that, pip installed 
+my pyinstaller to python 2.7. This should not give any issues. 
+Yet it did, the command pyinstaller was not recognised yet 
+pyinstaller was defenetly installed in python 2.7. So after finding out about pip3. 
+I simply installed pyinstaller with pip3. 
+Now the pyinstaller works fine in terminal. 
+Seems like python 2.7 does not have this function and python 3 does. 
+No success in getting Simpie compiled outside of windows.
+
+Getting simpie to start applications in the Operating System
+    - Simpie can now open chrome if it is installd on both mac and windows.
+    - Simpie can now also run almost all applications on mac and windows. This only if they are inside
+        the applications folder for mac and the Program Files (x86) folder on windows. You are require
+	to type the name of the application right because the searchfunction is casesensitive. For apple this 
+	is easy because all .app files in /Applications are written with a upper case letter. In windows it is
+	dependant on the application itself.
+    - Simpie can now also check if an application is installed on mac and on windows.
+    - The get user command will give the name of the user on both mac and windows
+    - The help command will give a better view of what commands you can use.
+    - You can now force simpie to print something in the terminal.
+    - Simpie can give a list of all the applications installed on the device
+        with 'both' simpie will print a dictionary with the folder of the 
+        application and the name of the applicaiton.
+        With 'names' simpie will just print the names of the installed applications.
+    - The folder SimpieBot 0.1.1 Win was created with the standalone executable and a folder executable.
