@@ -46,3 +46,9 @@ Getting simpie to start applications in the Operating System
         application and the name of the applicaiton.
         With 'names' simpie will just print the names of the installed applications.
     - The folder SimpieBot 0.1.1 Win was created with the standalone executable and a folder executable.
+
+Devblog ver 0.1.2
+Very small patch. I fixed some minor crashes. New version of the application is ofcourse availeble. I dropped support
+for the one file .exe becauses its performance is just not good enough. An installer has now been made for windows.
+The program used for creating this installer is called advanced installer 17.1.1. It has a nice simple wizard design and
+will enable end users to easily install simpie bot.

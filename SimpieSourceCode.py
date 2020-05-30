@@ -2,19 +2,21 @@
 import sys
 operatingsystem = sys.platform
 #-------------------#-------------------Definitions
+def print_lst_one_by_one(lstname: list) -> str:
+    for lstelement in range(len(lstname)):
+        print(printthis(lstname[lstelement]))
+    return '\n'
 def install_checker(appname: str) -> bool:
     exelist = exeappwalker('names')
     exelist.sort()
     if operatingsystem == 'win32':
         Exename_with_extension = appname + '.exe'
-        print('The full name of the executable:', Exename_with_extension)
         if Exename_with_extension in exelist:
             return True
         else:
-            print(exelist)
-            return False
+            return exelist
     elif operatingsystem == 'darwin':
-        appname_with_extension = appname + '.app'
+        Appname_with_extension = appname + '.app'
         Appname_with_extension = appname[0].capitalize() + appname[1::] + '.app'
         print('The full name of the app:', Appname_with_extension)
         if Appname_with_extension in exelist:
@@ -30,11 +32,11 @@ def startapp(appname: str):
         try:
             path = get_key(Exename_with_extension)
             path_Appname = path + '\\' + Exename_with_extension
-            print(path_Appname)
             subprocess.Popen([path_Appname, '-new-tab'])
-            return 'Successfully started', Exename_with_extension, '!'
-        except FileExistsError:
-            print("Something is missing, maybe it's my programmer's brain.")
+            answer = 'path: ' + path_Appname + '\nSuccessfully started ' + Exename_with_extension + '!'
+            return answer
+        except FileNotFoundError:
+            return "Something is missing, maybe it's my programmer's brain."
     elif operatingsystem == 'darwin':
         Appname_with_extension = appname[0].capitalize() + appname[1::] + '.app'
         try:
@@ -42,16 +44,16 @@ def startapp(appname: str):
             path_Appname = path + '/' + Appname_with_extension
             print(path_Appname)
             subprocess.call(["/usr/bin/open", "-W", "-n", "-a", path_Appname])
-            return 'Successfully started', Appname_with_extension, '!'
+            answer = 'Successfully started' + Appname_with_extension + '!'
+            return answer
         except FileExistsError:
             print("Something is missing, maybe it's my programmer's brain.")     
 def get_key(val): 
     path_dict = dict(exeappwalker('both'))
-    print
     for key, value in path_dict.items(): 
-         if val in value: 
-             return key 
-    return "Seems like this Program is not installed, or I'm just stupid. Probably the latter"
+        if val in value:
+            return key 
+    return "Seems like this Program is not installed. \nAre you sure you typed it right?"
 def checkos():
     if operatingsystem == 'win32':
         winversion = sys.getwindowsversion()
@@ -66,7 +68,7 @@ def checkos():
     else:
         return 'Seems like you are running something fishy'
 def printthis(woord: str) -> str:
-    print(woord)
+    return woord
 def exeappwalker(answer: str):
     import os
     from os import walk
@@ -122,17 +124,21 @@ def open(porgram_name: str):
                     subprocess.Popen(['C:\Program Files (x86)\Google\Chrome\Application\\chrome.exe', '-new-tab'])
                     return 'Successfully started Google chrome!'
             except FileNotFoundError:
-                print('Seems like this program is not installed.')
+                return 'Seems like this program is not installed.'
+        else:
+            answer = 'Opening "' + porgram_name + '" is not supported by the command "open". \nTry again with: start ' + porgram_name
+            return answer
     elif operatingsystem == 'darwin':
         import subprocess
         if porgram_name == "google" or porgram_name ==  "browser" or porgram_name == "chrome":
             try:
                 subprocess.call(["/usr/bin/open", "-W", "-n", "-a", "/Applications/Google chrome.app"])
                 return 'Successfully started Google chrome!'
-            except FileExistsError or FileNotFoundError:
+            except FileNotFoundError:
                 return 'Seems like this program is not installed.'
         else:
-            return 'Seems like this program cannot be openen with this function.'
+            answer = 'Opening "' + porgram_name + '" is not supported by the command "open". \nTry again with: start ' + porgram_name
+            return answer
     else:
         return 'This command is not yet available on your operating system.'
 def get_system_info():
@@ -142,37 +148,46 @@ def get_system_info():
     Username = platform.node()
     return Username
 #-------------------#-------------------Main script
-a = 0
 name = ''
 lst_of_command = [
     '\n',
-    'If anything is written inbetween [] in means it can be filled in by own desire, keep in mind to not overtake the []!!!', 
+    'If anything is written inbetween [] in means it can be filled in by own desire (and even be kept open), keep in mind to not overtake the []!!!', 
     'Any text that is in () is just extra information.'
     '\n',
     'stop', 'help', "open [program_name] (fast method only works for some apps)", "show apps", 
     "system info", "print next (will ask for something to print)", "print [word]" , "get user", "check install [program_name]",
-    "start [program_name] (slow method works for all apps)",
-    '\n'
+    "start [program_name] (slow method works for all apps)", "settings",
 ]
-while a == 0:
+lst_of_settings_command = [
+    "\n",
+    'enable LOB (lauch Simpie on startup of the computer) **in development expect it to be out in ver 0.1.4' 
+    ,'back (gets you back to Simpie)',
+]
+lst_of_syteminfo = []
+while True:
     if name == '':
         printthis('Hi my name is Simpie')
         name = input('What is your name? ')
         answer = 'Hi ' + name + '!'
-        printthis(answer)
+        print(printthis(answer))
         printthis('Type help to see what functions you can use in this program.')
     command = input('Your command: ')
     commandlst = command.split(' ')
     if command == 'get user':
         print(get_system_info())
     if command == 'show os' or command == 'operating system' or command == 'system info':
+        import platform, socket
+        cpu = 'Processor: ' + platform.processor()
+        ip4 = 'ip4: ' + socket.gethostbyname(socket.gethostname())
+        lst_of_syteminfo.append(cpu)
+        lst_of_syteminfo.append(ip4)
+        print_lst_one_by_one(lst_of_syteminfo)
         print(checkos())
     if command == 'stop':
         break
     if command == 'show command' or command == 'show commands' or command == 'help':
         print('Okay here is a list of commands you can use:')
-        for n in range(len(lst_of_command)-1):
-            print(lst_of_command[n])
+        print(print_lst_one_by_one(lst_of_command))
     if command[0:4] == 'open':
         filename = command.split(' ')
         try:
@@ -211,16 +226,14 @@ while a == 0:
     if command[0:5] == 'print':
         if command[6:10] == 'next':
             woord = input('Type here what I have to print: ')
-            printthis(woord)
+            print(printthis(woord))
         else:
             printcommand = command.split(' ')
             woord = command[6::]
-            printthis(woord)
+            print(printthis(woord))
     if command[0:5] == 'start':
         startlst = command.split(' ')
         applst = startlst[1::]
-        print(applst)
-        print(len(startlst))
         if len(startlst) == 1:
             print('What app should I start', name,'?')
             appname = input()
@@ -239,10 +252,25 @@ while a == 0:
             appname = seperator.join(applst)
         if install_checker(appname) is True:
             print('The application is installed')
-        elif install_checker(appname) is False:
-            print("Seems like this application is not installed, \n are your sure you typed it's name right?")
         else:
             print(install_checker(appname))
+            print("\nSeems like this application is not installed, \nare your sure you typed it's name right? \nYou could look for its name by pressing ctrl + f and then typing the name.")
+    if commandlst[0] == "settings":
+        print('Here you can customise me. To see what types of settings you can change type help. \nTo leave this settings tree just type back.')
+        while command != 'back':
+            command = input("Change is good: ")
+            if command == 'back':
+                break
+            elif command == 'enable lob' or command == 'lob':
+                if operatingsystem == 'win32':
+                    print('Lob function not yet written')
+                else:
+                    print('This function is not yet available for your operating system')    
+            elif command == 'help':
+                print(print_lst_one_by_one(lst_of_settings_command))
+            # write short cut to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
+            # elif command == 'install bottie' or command == 'install':
+            # a shortcut will be made
 #-------------------#-------------------Kill
 print('By see you nex time.')
 quit
