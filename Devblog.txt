@@ -52,3 +52,17 @@ Very small patch. I fixed some minor crashes. New version of the application is 
 for the one file .exe becauses its performance is just not good enough. An installer has now been made for windows.
 The program used for creating this installer is called advanced installer 17.1.1. It has a nice simple wizard design and
 will enable end users to easily install simpie bot.
+
+Devblog ver o.1.3
+and than typing the command: update simpie.
+Windows users will also not be forced to give up a name because simpie will gues it. Mac os still has the old name request. 
+But darwin does not have an installer yet so that is not an issue / concern.
+Update simpie will download the latest version of the bot to the download folder. (it does not matter if the client changed
+the directory of the dowmload folder because simpie will find it anyway) After the latest update is downloaded simpie will 
+start the .msi and close down.
+Downgraded the installer to a simple .msi. This will stop windows from thinking that simpie is a virus. I did have to give
+up the design for that. But this also got rid of the dumb pop up that it was a trial version. 
+Boring look but more proffesional.
+Also created a update simpie command and a version command that gives the current version. 
+The lookup command will lookup anything you give to is. 
+I now have a line of code for every day of the year in the SimpieSourceCode.py

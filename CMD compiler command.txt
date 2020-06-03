@@ -19,7 +19,7 @@ are also very attrative.
 
 The powershell window \ command should look something like this:
 
-PS C:\Users\Qwert\OneDrive\Bureaublad\bot> pyinstaller -n SimpieBot -i "bot.ico" -F SimpieSourceCode.py
+PS C:\Users\Qwert\OneDrive\Bureaublad\bot> pyinstaller -n SimpieBot -i "bot.ico" SimpieSourceCode.py
 
 344 INFO: PyInstaller: 3.6
 344 INFO: Python: 3.8.3

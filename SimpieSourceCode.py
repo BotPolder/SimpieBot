@@ -1,6 +1,7 @@
 #-------------------#-------------------System startup
-import sys
+import sys, os, ctypes, urllib.request
 operatingsystem = sys.platform
+version = '0.1.3'
 #-------------------#-------------------Definitions
 def print_lst_one_by_one(lstname: list) -> str:
     for lstelement in range(len(lstname)):
@@ -147,6 +148,13 @@ def get_system_info():
     import os
     Username = platform.node()
     return Username
+def lookup(site: str):
+    import webbrowser
+    if site[0:4] == 'http':
+        webbrowser.open(site)
+    else:
+        adress = 'https://www.google.com/search?q=' + site
+        webbrowser.open(adress)
 #-------------------#-------------------Main script
 name = ''
 lst_of_command = [
@@ -161,16 +169,26 @@ lst_of_command = [
 lst_of_settings_command = [
     "\n",
     'enable LOB (lauch Simpie on startup of the computer) **in development expect it to be out in ver 0.1.4' 
-    ,'back (gets you back to Simpie)',
+    ,'back (gets you back to Simpie)'
+    ,'version (will give the current version of simpie)'
+    , 'check update (will go to download site)'
+    , 'update simpie (will download the latest installer of the app and run the installer)'
+    , 'read blog (will open the devblog of this project. Here your can read all about the latest updates.)'
 ]
 lst_of_syteminfo = []
+if operatingsystem == 'win32':
+    username = os.getlogin()
+    answer = 'Hi ' + username + '!' 
+    print(answer)
+    print('Type help to see what functions you can use in this program. \n')
 while True:
-    if name == '':
-        printthis('Hi my name is Simpie')
-        name = input('What is your name? ')
-        answer = 'Hi ' + name + '!'
-        print(printthis(answer))
-        printthis('Type help to see what functions you can use in this program.')
+    if operatingsystem == 'darwin':
+        if name == '':
+            printthis('Hi my name is Simpie')
+            name = input('What is your name? ')
+            answer = 'Hi ' + name + '!'
+            print(printthis(answer))
+            printthis('Type help to see what functions you can use in this program.')
     command = input('Your command: ')
     commandlst = command.split(' ')
     if command == 'get user':
@@ -258,19 +276,90 @@ while True:
     if commandlst[0] == "settings":
         print('Here you can customise me. To see what types of settings you can change type help. \nTo leave this settings tree just type back.')
         while command != 'back':
-            command = input("Change is good: ")
-            if command == 'back':
-                break
-            elif command == 'enable lob' or command == 'lob':
-                if operatingsystem == 'win32':
-                    print('Lob function not yet written')
-                else:
-                    print('This function is not yet available for your operating system')    
-            elif command == 'help':
-                print(print_lst_one_by_one(lst_of_settings_command))
+            if operatingsystem == 'win32':
+                command = input("Change is good: ")
+                if command == 'back':
+                    break
+                elif command == 'read blog' or command == 'devblog':
+                    lookup('https://raw.githubusercontent.com/BotPolder/SimpieBot/master/Devblog.txt')
+                if command == 'enable lob' or command == 'lob':
+                    try:
+                        from winreg import *
+                        with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
+                            Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
+                        downloads_icon = Downloads + "/bot.ico"
+                        urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/bot.ico", downloads_icon)
+                        from pyshortcuts import make_shortcut
+                        make_shortcut('C:\Program Files (x86)\\BotPolder\Simpie\BotPolder\SimpieBot.exe', name='SimpieBot', icon=downloads_icon)
+                        #make_shortcut('C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup', name='SimpieBot', icon=downloads_icon)
+                        #C:\Program Files (x86)\BotPolder\Simpie\BotPolder
+                    except:
+                        print('ERROR: pyshortcuts not installer') 
+                elif command == 'help':
+                    print(print_lst_one_by_one(lst_of_settings_command))  
+                elif command == 'version':
+                    print(version)
+                elif command == 'check update' or command == 'update':
+                    lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
+                elif command == 'update simpie':
+                    from winreg import *
+                    with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
+                        Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
+                    downloads_installer = Downloads + "/Simpie Installer.msi"
+                    import pathlib
+                    installer = pathlib.Path(downloads_installer)
+                    if installer.exists ():
+                        print ("File exist \nDeleting old installer")
+                        os.unlink(downloads_installer) 
+                        print('Downloadin latest version. \nThis should not take longer than a minute.s')
+                        urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
+                        print('Download compleet')
+                    else:
+                        print ("File not exist")
+                        print('Beginning file download with urllib2...')
+                        urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
+                        print('Download compleet')
+                    print('Running installer')
+                    try:
+                        os.startfile(downloads_installer)
+                        break
+                    except FileNotFoundError:
+                        print('Download failed')
+            if operatingsystem == 'darwin':
+                command = input("Change is good: ")
+                if command == 'back':
+                    break
+                elif command == 'enable lob' or command == 'lob':
+                    print('This function is not yet available for your operating system')
+                elif command == 'help':
+                    print(print_lst_one_by_one(lst_of_settings_command))
+                elif command == 'version':
+                    print(version)
+                elif command == 'check update' or command == 'update':
+                    lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
+                elif command == 'update simpie':
+                    import urllib.request
+                    print('Beginning file download with urllib2...')
+                    url = 'http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg'
+                    downloadfile = '/Users/'+ username +'/Downloads/cat.jpg'
+                    urllib.request.urlretrieve(url, '/Users/''/Downloads/cat.jpg')
+                elif command == 'desktop':
+                    import os
+                    path = "C:/Users"
+                    path = os.path.realpath(path)
+                    os.startfile(path)
             # write short cut to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
             # elif command == 'install bottie' or command == 'install':
             # a shortcut will be made
+    if commandlst[0] == "google" or commandlst[0] == "lookup" or commandlst[0] == "search":
+        if len(commandlst) > 1:
+            command = commandlst[1::]
+            commandstr = ' '
+            commandstr = commandstr.join(command)
+            lookup(commandstr)
+        else:
+            command = input('What should I look for?\n')
+            lookup(command)
 #-------------------#-------------------Kill
 print('By see you nex time.')
 quit
