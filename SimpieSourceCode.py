@@ -1,17 +1,96 @@
 #-------------------#-------------------System startup
-import sys, os, ctypes, urllib.request
+import sys, os, ctypes, urllib.request, time, requests
+from winreg import *
+from bs4 import BeautifulSoup
 operatingsystem = sys.platform
-version = '0.1.3'
+version = '0.1.4'
+version_lst = version.split('.')
+skip_initial_command = False
 #-------------------#-------------------Definitions
-def print_lst_one_by_one(lstname: list) -> str:
-    for lstelement in range(len(lstname)):
-        print(printthis(lstname[lstelement]))
+def update_check() -> str: ## The updated_check() will only work if subversion (z) in (x.y.z) is not higher than 15. ##and will only work for alpha (0.x.y)
+    if operatingsystem == 'win32':   
+        url = 'https://github.com/BotPolder/SimpieBot/tree/master/Installer'
+        try:
+            response = requests.get(url)
+            check = str(response)
+            if check == '<Response [200]>':
+                soup = BeautifulSoup(response.text, "html.parser")
+                set_of_span = set(soup.findAll("span", {"class": "css-truncate css-truncate-target"}))
+                str_of_span = str(set_of_span)
+                devblog_words = str_of_span.split()
+                ver = '0.1.'
+                ver_github = '0.0.0'
+                ver_lst = []
+                for n in range(15):
+                    ver_str = ver + str(n)
+                    if ver_str in devblog_words:
+                        ver_github = ver_str
+                        ver_lst = ver_str.split('.')
+                        if ver_str == version:
+                            return 'latest'
+                        #if n == 14:
+                            #print('last')
+                ver_github_lst = ver_github.split('.')
+                if int(ver_github_lst[1]) >= int(version_lst[1]):
+                    if int(ver_github_lst[2]) > int(version_lst[2]):
+                        return ver_github
+                    else:
+                        return 'newer_version'
+                else:
+                    return 'newer_version'
+        except:
+            return 'internet_error'
+    else:
+        return 'not_supported'
+def update_simpie():
+    if operatingsystem == 'win32':
+        with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
+            Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
+        downloads_installer = Downloads + "/Simpie Installer.msi"
+        import pathlib
+        installer = pathlib.Path(downloads_installer)
+        if installer.exists ():
+            print ("\nFile exist \nDeleting old installer")
+            os.unlink(downloads_installer) 
+            print('Downloading latest version. \nThis should not take longer than a minute. -> ', end='')
+            urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
+            print('Download compleet -> ', end='')
+        else:
+            print ("File not exist")
+            print('Beginning file download from Github repo')
+            urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
+            print('Download compleet')
+        print('Running installer')
+        try:
+            return os.startfile(downloads_installer)
+        except FileNotFoundError:
+            return 'Download failed'
+    else:
+        print('Seems like your Operating System does not yet support this function. \nWould you like to go to the download file?')
+        answer = input('yes / no:')
+        if answer == 'yes':
+            return lookup('https://github.com/BotPolder/SimpieBot/raw/master')
+def print_lst_one_by_one(lstname: list,sidebyside: bool) -> str:
+    if sidebyside is False:
+        for lstelement in range(len(lstname)):
+            print(lstname[lstelement])
+    if sidebyside is True:
+        for lstelement in range(len(lstname)):
+            try:
+                if len(lstname[lstelement]) < 15 and len(lstname[lstelement + 1]) < 15 and len(lstname[lstelement + 2]) < 15 and len(lstname[lstelement + 3]) < 15:
+                    print(lstname[lstelement], '\t\t', lstname[lstelement + 1], '\t\t', lstname[lstelement + 2], '\t\t', lstname[lstelement + 3])
+                else:
+                    print(lstname[lstelement], '\t\t\t', lstname[lstelement + 1], '\t\t\t', lstname[lstelement + 2], '\t\t\t', lstname[lstelement + 3])
+            except IndexError:
+                for n in range(2):
+                    print(lstname[lstelement + n])
     return '\n'
 def install_checker(appname: str) -> bool:
     exelist = exeappwalker('names')
     exelist.sort()
     if operatingsystem == 'win32':
         Exename_with_extension = appname + '.exe'
+        print(Exename_with_extension)
         if Exename_with_extension in exelist:
             return True
         else:
@@ -157,20 +236,34 @@ def lookup(site: str):
         webbrowser.open(adress)
 #-------------------#-------------------Main script
 name = ''
+raw_lst_of_command = [
+    'get user', 'show os', 'operating system', 'system info', 'stop', 'quit', 'show command', 'show commands',
+    'help', 'open chrome', 'open firefox', 'open google', 'hi', 'hello', 'ni hao', 'show applications', 'show apps', 'list apps', 'list app',
+    'list programs', 'print', 'start', "google", "lookup", "search", "settings", 'check', 'install', 'back', 'devblog', 'check install', 'install check'
+]
 lst_of_command = [
-    '\n',
-    'If anything is written inbetween [] in means it can be filled in by own desire (and even be kept open), keep in mind to not overtake the []!!!', 
-    'Any text that is in () is just extra information.'
-    '\n',
-    'stop', 'help', "open [program_name] (fast method only works for some apps)", "show apps", 
-    "system info", "print next (will ask for something to print)", "print [word]" , "get user", "check install [program_name]",
-    "start [program_name] (slow method works for all apps)", "settings",
+    ''' \nIf anything is written inbetween [] it means it can be filled in by own desire (and even be kept open), 
+    keep in mind to not overtake the []!!!
+    Any text that is in () is just extra information.
+    ''',
+    'Okay here is a list of commands you can use:\n'
+    , "open [program_name] (fast method only works for some apps)"
+    , "show apps (gives you a list of all the applications installed on your device)"
+    , "system info (will tell you something more about your pc."
+    , "print next (will ask for something to print)"
+    , "print [word]"
+    , "get user (will give you the current username and name of the device)"
+    , "check install [program_name]"
+    ,"start [program_name] (slow method works for all apps)"
+    , 'devblog (will print out the devblog)'
+    , 'lookup [word or direct link] (will look words or links up on the internet)'
+    , "\nsettings (customise me)", 'stop (or) quit (will shut me down)', 'help'
 ]
 lst_of_settings_command = [
     "\n",
-    'enable LOB (lauch Simpie on startup of the computer) **in development expect it to be out in ver 0.1.4' 
+    'enable LOB (lauch Simpie on startup of the computer) **in development expect it to be out in ver 0.1.5' 
     ,'back (gets you back to Simpie)'
-    ,'version (will give the current version of simpie)'
+    ,'version (will give the current version of simpie, and compare it to the current installation.)'
     , 'check update (will go to download site)'
     , 'update simpie (will download the latest installer of the app and run the installer)'
     , 'read blog (will open the devblog of this project. Here your can read all about the latest updates.)'
@@ -181,39 +274,61 @@ if operatingsystem == 'win32':
     answer = 'Hi ' + username + '!' 
     print(answer)
     print('Type help to see what functions you can use in this program. \n')
+    info = update_check() 
+    if info[0:2] == '0.':
+        print('There is a new version available would you like to update? \nCurrent version: ', version, '\nNewer version: ', info)
+        answer = input('yes / no: ')
+        if answer == 'yes':
+            update_simpie()
+        else:
+            print('Okay current version remains.')
+    elif info == 'newer_version':
+        print('Hi developer :)')
+    elif info == 'internet_error':
+        print('Seems like you are not connected to the internet. \nWant to check for an update?')
+        answer = input('yes / no: ')
+        if answer == 'yes':
+            lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
+    elif info != 'latest' and info[0:2] != '0.' and info != 'newer_version' and info != 'network_error':
+        print(info)
 while True:
     if operatingsystem == 'darwin':
         if name == '':
-            printthis('Hi my name is Simpie')
+            print('Hi my name is Simpie')
             name = input('What is your name? ')
             answer = 'Hi ' + name + '!'
-            print(printthis(answer))
-            printthis('Type help to see what functions you can use in this program.')
-    command = input('Your command: ')
+            print(answer)
+            print('Type help to see what functions you can use in this program.')
+    if skip_initial_command is False:
+        command = input('Your command: ')
+    skip_initial_command = False
     commandlst = command.split(' ')
-    if command == 'get user':
-        print(get_system_info())
-    if command == 'show os' or command == 'operating system' or command == 'system info':
+    commandlst.append('command')
+    if command == 'get user': #and commandlst[-1] == command:
+        if operatingsystem == 'darwin':
+            print('The system name: ',get_system_info(), '\n')
+        if operatingsystem == 'win32':
+            print('The system name:',get_system_info(), '\nThe username:', username)
+    if (command == 'show os' or command == 'operating system' or command == 'system info') and commandlst[-1] == 'command':
         import platform, socket
-        cpu = 'Processor: ' + platform.processor()
+        cpu = '\nProcessor: ' + platform.processor()
         ip4 = 'ip4: ' + socket.gethostbyname(socket.gethostname())
         lst_of_syteminfo.append(cpu)
         lst_of_syteminfo.append(ip4)
-        print_lst_one_by_one(lst_of_syteminfo)
+        print_lst_one_by_one(lst_of_syteminfo, False)
         print(checkos())
-    if command == 'stop':
+    if (command == 'stop' or command == 'quit') and commandlst[-1] == 'command':
         break
-    if command == 'show command' or command == 'show commands' or command == 'help':
-        print('Okay here is a list of commands you can use:')
-        print(print_lst_one_by_one(lst_of_command))
-    if command[0:4] == 'open':
+    if (command == 'show command' or command == 'show commands' or command == 'help') and commandlst[-1] == 'command':
+        print(print_lst_one_by_one(lst_of_command, False))
+    if commandlst[0] == 'open'and commandlst[-1] == 'command':
         filename = command.split(' ')
         try:
             print(open(filename[1]))
         except IndexError:
             print('Sorry can you try that command again, I think you missed something. Or I did at least.')
             quit
-    if command == 'hi' or command == 'hello' or command == 'ni hao':
+    if (command == 'hi' or command == 'hello' or command == 'ni hao') and commandlst[-1] == 'command':
         print('Hi, how are you doing', name,'?')
         answer = input()
         if answer == 'good' or answer == 'okay' or answer == 'fine':
@@ -228,10 +343,14 @@ while True:
                 answer = input()
                 if answer == 'yes':
                     break
-    if command == 'show applications' or command == 'show apps' or command == 'list apps' or command == 'list app' or command == 'list programs': 
+    if (command == 'show applications' or command == 'show apps' or command == 'list apps' or command == 'list app' or command == 'list programs')and commandlst[-1] == 'command': 
         namesboth = input('Should I just print the names or also the directories? \nType names or both: ')
         if namesboth == 'both' or namesboth == 'names':
-            print(exeappwalker(namesboth))
+            exelst_dict = exeappwalker(namesboth)
+            if type(exelst_dict):
+                print_lst_one_by_one(exelst_dict, True)
+            else:
+                print(exeappwalker(namesboth))
         else:
             print("Sorry I did't get that, just the names of both?")
             namesboth = input('names or both? ')
@@ -241,15 +360,15 @@ while True:
                 print("Sorry I didn't get that, Do you just want the names or also the directroies?")
                 namesboth = input('names or both? ')
                 print(exeappwalker(namesboth))
-    if command[0:5] == 'print':
+    if commandlst[0] == 'print'and commandlst[-1] == 'command':
         if command[6:10] == 'next':
             woord = input('Type here what I have to print: ')
-            print(printthis(woord))
+            print(woord)
         else:
             printcommand = command.split(' ')
             woord = command[6::]
-            print(printthis(woord))
-    if command[0:5] == 'start':
+            print(woord)
+    if commandlst[0] == 'start'and commandlst[-1] == 'command':
         startlst = command.split(' ')
         applst = startlst[1::]
         if len(startlst) == 1:
@@ -260,21 +379,22 @@ while True:
             seperator = ' '
             appname = seperator.join(applst)
             print(startapp(appname))
-    if commandlst[0:2] == ['install', 'check'] or commandlst[0:2] == ['check', 'install']:
+    if commandlst[0:2] == ['install', 'check'] or commandlst[0:2] == ['check', 'install'] and commandlst[-1] == 'command':
         seperator = ' '
-        if len(commandlst) <= 2:
+        if len(commandlst) <= 3: ## because of this dumb command check i have to use 3 instead of 2.
             print('For what app install should I look?')
             appname = input('Program name: ')
         else:
             applst = commandlst[2::]
             appname = seperator.join(applst)
+            appname = appname[0:-8] ## and here i have to delete the dumb thing so that it skips the last 8 dumb string kars. Damnit
         if install_checker(appname) is True:
             print('The application is installed')
         else:
             print(install_checker(appname))
             print("\nSeems like this application is not installed, \nare your sure you typed it's name right? \nYou could look for its name by pressing ctrl + f and then typing the name.")
-    if commandlst[0] == "settings":
-        print('Here you can customise me. To see what types of settings you can change type help. \nTo leave this settings tree just type back.')
+    if commandlst[0] == "settings"and commandlst[-1] == 'command':
+        print('\nHere you can customise me. To see what types of settings you can change type help. \nTo leave this settings tree just type back.')
         while command != 'back':
             if operatingsystem == 'win32':
                 command = input("Change is good: ")
@@ -296,35 +416,37 @@ while True:
                     except:
                         print('ERROR: pyshortcuts not installer') 
                 elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command))  
+                    print(print_lst_one_by_one(lst_of_settings_command, False))  
                 elif command == 'version':
-                    print(version)
+                    info = update_check() 
+                    if info[0:2] == '0.':
+                        print('\nThere is a new version available would you like to update? \nCurrent version', version, '\nNewer version: ', info)
+                        answer = input('yes / no: ')
+                        if answer == 'yes':
+                            update_simpie()
+                        else:
+                            print('Okay current version remains.')
+                    elif info == 'latest':
+                        print('You have the latest version installed on your device')
+                    elif info == 'not_supported':
+                        print('This function is not yet supported by your Operating System')
+                    elif info == 'newer_version':
+                        print('Hi developer :) \nYou are on:\tStaging Branch: ', version)
+                    elif info == 'internet_error':
+                        print('Seems like you are not connected to the internet. Want to check or leave it for now?')
+                        answer = input('Want to check if the downloadsite is online: ')
+                        if answer == 'yes':
+                            lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
+                    else:
+                        print(info)
+                        print("Could not check for new version of me online. \nAre you sure you have internet?")
+                        answer = input('Want to check if te site is online: ')
+                        if answer == 'yes':
+                            lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
                 elif command == 'check update' or command == 'update':
                     lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
                 elif command == 'update simpie':
-                    from winreg import *
-                    with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
-                        Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
-                    downloads_installer = Downloads + "/Simpie Installer.msi"
-                    import pathlib
-                    installer = pathlib.Path(downloads_installer)
-                    if installer.exists ():
-                        print ("File exist \nDeleting old installer")
-                        os.unlink(downloads_installer) 
-                        print('Downloadin latest version. \nThis should not take longer than a minute.s')
-                        urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
-                        print('Download compleet')
-                    else:
-                        print ("File not exist")
-                        print('Beginning file download with urllib2...')
-                        urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
-                        print('Download compleet')
-                    print('Running installer')
-                    try:
-                        os.startfile(downloads_installer)
-                        break
-                    except FileNotFoundError:
-                        print('Download failed')
+                    update_simpie()
             if operatingsystem == 'darwin':
                 command = input("Change is good: ")
                 if command == 'back':
@@ -332,34 +454,143 @@ while True:
                 elif command == 'enable lob' or command == 'lob':
                     print('This function is not yet available for your operating system')
                 elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command))
+                    print(print_lst_one_by_one(lst_of_settings_command, False))
                 elif command == 'version':
                     print(version)
                 elif command == 'check update' or command == 'update':
                     lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
-                elif command == 'update simpie':
-                    import urllib.request
-                    print('Beginning file download with urllib2...')
-                    url = 'http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg'
-                    downloadfile = '/Users/'+ username +'/Downloads/cat.jpg'
-                    urllib.request.urlretrieve(url, '/Users/''/Downloads/cat.jpg')
-                elif command == 'desktop':
-                    import os
-                    path = "C:/Users"
-                    path = os.path.realpath(path)
-                    os.startfile(path)
+                #elif command == 'update simpie':
+                #    import urllib.request
+                #    print('Beginning file download')
+                #    url = 'http://'
+                #    downloadfile = '/Users/'+ username +'/Downloads/.app'
+                #    urllib.request.urlretrieve(url, '/Users/''/Downloads/.app')
+                #elif command == 'desktop':
+                #    import os
+                #    path = "C:/Users"
+                #    path = os.path.realpath(path)
+                #    os.startfile(path)
             # write short cut to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
             # elif command == 'install bottie' or command == 'install':
             # a shortcut will be made
-    if commandlst[0] == "google" or commandlst[0] == "lookup" or commandlst[0] == "search":
-        if len(commandlst) > 1:
-            command = commandlst[1::]
-            commandstr = ' '
-            commandstr = commandstr.join(command)
+    if (commandlst[0] == "google" or commandlst[0] == "lookup" or commandlst[0] == "search") and commandlst[-1] == 'command':
+        if len(commandlst) > 2:
+            command = commandlst[1:-1]
+            seperator = ' '
+            commandstr = seperator.join(command)
             lookup(commandstr)
         else:
             command = input('What should I look for?\n')
             lookup(command)
+    if commandlst[0] == "devblog" and commandlst[-1] == 'command':
+        url = 'https://raw.githubusercontent.com/BotPolder/SimpieBot/master/Devblog.txt'
+        try:
+            response = requests.get(url)
+            check = str(response)
+            if check == '<Response [200]>':
+                skip = False
+                devblog = str(BeautifulSoup(response.text, "html.parser"))
+                devblog_list = devblog.split('\n')
+                first_devblog_element = str(devblog_list[0])
+                print('About what version would you like to read the devblog?')
+                print('Available devblog versions: 0.0.1 ->', update_check())
+                answer = input('current / other / all: ')
+                if answer == 'all':
+                    for n in range(len(devblog_list)):
+                        print(devblog_list[n])
+                        skip = True
+                if answer == 'current' and skip is False:
+                    dev_version = version
+                    if skip is False:
+                        version_key = 0
+                        version_1_key = 0
+                        for n in range(len(devblog_list)):
+                            version_str = 'Devblog: ver ' + str(dev_version)
+                            version_str_alt = 'Devblog ver ' + str(dev_version)
+                            version_str_1 = 'Devblog: ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
+                            version_str_1_alt = 'Devblog ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
+                            if version_str == devblog_list[n]:
+                                version_key = n
+                            if first_devblog_element[11] == 'Devblog ver' or  first_devblog_element[11] == 'Devblog ver' :
+                                version_key = n
+                            if version_str_1 == devblog_list[n]:
+                                version_1_key = n
+                            if version_str_1_alt == devblog_list[n]:
+                                version_1_key = n
+                        seperator = ' '
+                        devblog_str = seperator.join(devblog_list[version_key:version_1_key])
+                        print(devblog_str)
+                    skip = True
+                if answer != 'other' and answer != 'current' and answer != 'all' and skip is False:
+                    print("Sorry I didn't get thatt")
+                if answer == 'other' and skip is False:
+                    print('type the numbers of the version one by one:')
+                    dev_version = ''
+                    while len(dev_version.split('.')) < 3:
+                        for n in range(3):
+                            answer = input(dev_version)
+                            try:
+                                answer = str(int(answer))
+                                if n < 2:
+                                    dev_version += str(answer) + '.'
+                                else:
+                                    dev_version += str(answer)
+                                    answer = 'other'
+                            except ValueError:
+                                if answer == 'back':
+                                    dev_version = dev_version.split('.')
+                                    dev_version.pop(-1)
+                                    seperator = '.'
+                                    dev_version = str(seperator.join(dev_version))
+                                else:
+                                    print('You can only put in one number.')
+                try:
+                    if skip is False:
+                        version_key = 0
+                        version_1_key = 0
+                        for n in range(len(devblog_list)):
+                            version_str = 'Devblog: ver ' + str(dev_version)
+                            version_str_alt = 'Devblog ver ' + str(dev_version)
+                            version_str_1 = 'Devblog: ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
+                            version_str_1_alt = 'Devblog ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
+                            if version_str == devblog_list[n]:
+                                version_key = n
+                            if version_str_alt == devblog_list[n]:
+                                version_key = n
+                            if version_str_1 == devblog_list[n]:
+                                version_1_key = n
+                            if version_str_1_alt == devblog_list[n]:
+                                version_1_key = n
+                        seperator = ' '
+                        devblog_str = seperator.join(devblog_list[version_key:version_1_key])
+                        print(devblog_str)
+                except:
+                    print("sorry I didn't get that")
+                    skip_initial_command = True
+        except:
+            print('internet_error')
+    if commandlst[-1] == 'command' and command not in raw_lst_of_command and commandlst[0:2] != ['check', 'install'] and commandlst[0] != 'lookup' and commandlst[0] != 'open' and commandlst[0] != 'start':
+        for gues_command in raw_lst_of_command:
+            current_command_check = []
+            count = 0
+            for kar in gues_command :
+                current_command_check.append(kar)
+            for kar in command:
+                if kar in current_command_check:
+                    count += 1
+            count = float(count)
+            if count >= 0.75 * len(command):
+                print('Did you mean to type:', gues_command, '?')
+                answer = input('yes, no, stop: ')
+                if answer == 'yes':
+                    command = gues_command
+                    skip_initial_command = True
+                    break
+                if answer == 'stop' or answer == 'quit':
+                    break
+        if answer != 'stop' and  answer != 'yes' and  answer != 'quit':
+            print("Sorry I didn't get that, try typing the command again. \nOr use the command help for more info.")
+
 #-------------------#-------------------Kill
-print('By see you nex time.')
+print('Bye see you next time.')
 quit

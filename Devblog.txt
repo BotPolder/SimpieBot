@@ -10,12 +10,12 @@ Simpie is written in Python instead of the Batch used to write Simplebot
 
 Devblog: ver 0.1.0
 Simpie has now been compiled to an alpha state executable. 
-impie can now be downloaded and executed on almost every windows computer. 
+Simpie can now be downloaded and executed on almost every windows computer. 
 In following updated MacOS support will follow, and after that Linux support.
 A funny little icon was also added to the repository. This will be the icon of Simpie for now. 
 The original png was also included in this update.
 
-Devblog ver 0.1.1
+Devblog: ver 0.1.1
 Getting simpie crosplatform compiled
 I had some issues with pyinstaller. 
 Pyinstaller worked fine for my windows version of Simpie. 
@@ -47,13 +47,13 @@ Getting simpie to start applications in the Operating System
         With 'names' simpie will just print the names of the installed applications.
     - The folder SimpieBot 0.1.1 Win was created with the standalone executable and a folder executable.
 
-Devblog ver 0.1.2
+Devblog: ver 0.1.2
 Very small patch. I fixed some minor crashes. New version of the application is ofcourse availeble. I dropped support
 for the one file .exe becauses its performance is just not good enough. An installer has now been made for windows.
 The program used for creating this installer is called advanced installer 17.1.1. It has a nice simple wizard design and
 will enable end users to easily install simpie bot.
 
-Devblog ver o.1.3
+Devblog: ver 0.1.3
 Windows users can now install new versions of the application from within simpie. This is done by going to settings
 and than typing the command: update simpie.
 Windows users will also not be forced to give up a name because simpie will gues it. Mac os still has the old name request. 
@@ -67,3 +67,23 @@ Boring look but more proffesional.
 Also created a update simpie command and a version command that gives the current version. 
 The lookup command will lookup anything you give to is. 
 I now have a line of code for every day of the year in the SimpieSourceCode.py
+
+Devblog: ver 0.1.4
+Added the update_check( ), This definition will check the download version for new versions. 
+And if there are the update will be advised to be installed to the client.
+Simpie will no check for internet connection on the start of the bot, 
+If there is no connection made, the user gets the option to skip update check. 
+The command version in settings will now also compare the current version to the latest version available online.
+Simpie now also got a little smarter. 
+Simpie will gues the command you typed an ask if you meant something else that you typed if you typed a typo.
+This gues block is not fully watertight and simpie will sometimes just start rambeling, this is why I added a stop
+function so that the guessing can be stopped. 
+I put some work in the helplist so that the commands are explained a little better.
+And put a lot of work in the new command devblog. This command will give you the option to print out
+the devblog in your terminal. You can request the entire devblog or a specific version or just the current version.
+The updating process is now more compact and organised. 
+Simpie code is compatible with MacOs but I can't seem to figure out how to compile simpie to a .app.
+I hope to get simpie working on the macOs platform soon.
+Oh yea I almoste dubbled the length of simpies source code too 596 lines :)
+And finally after writing the code for this huge update I can start learning for my exames. 
+Thank you for using my sofware. I hope you are enjoying Simpie.
