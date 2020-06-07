@@ -82,8 +82,7 @@ def print_lst_one_by_one(lstname: list,sidebyside: bool) -> str:
                 else:
                     print(lstname[lstelement], '\t\t\t', lstname[lstelement + 1], '\t\t\t', lstname[lstelement + 2], '\t\t\t', lstname[lstelement + 3])
             except IndexError:
-                for n in range(2):
-                    print(lstname[lstelement + n])
+                break
     return '\n'
 def install_checker(appname: str) -> bool:
     exelist = exeappwalker('names')
@@ -569,7 +568,7 @@ while True:
                     skip_initial_command = True
         except:
             print('internet_error')
-    if commandlst[-1] == 'command' and command not in raw_lst_of_command and commandlst[0:2] != ['check', 'install'] and commandlst[0] != 'lookup' and commandlst[0] != 'open' and commandlst[0] != 'start':
+    if commandlst[-1] == 'command' and command not in raw_lst_of_command and commandlst[0:2] != ['check', 'install'] and commandlst[0:2] != ['print', 'next'] and commandlst[0] != 'print' and commandlst[0] != 'lookup' and commandlst[0] != 'open' and commandlst[0] != 'start':
         for gues_command in raw_lst_of_command:
             current_command_check = []
             count = 0
