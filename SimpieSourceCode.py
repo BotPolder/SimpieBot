@@ -3,7 +3,7 @@ import sys, os, ctypes, urllib.request, time, requests
 from winreg import *
 from bs4 import BeautifulSoup
 operatingsystem = sys.platform
-version = '0.1.4'
+version = '0.1.5'
 version_lst = version.split('.')
 skip_initial_command = False
 #-------------------#-------------------Definitions
@@ -18,8 +18,8 @@ def update_check() -> str: ## The updated_check() will only work if subversion (
                 set_of_span = set(soup.findAll("span", {"class": "css-truncate css-truncate-target"}))
                 str_of_span = str(set_of_span)
                 devblog_words = str_of_span.split()
-                ver = '0.1.'
                 ver_github = '0.0.0'
+                ver = '0.1.'
                 ver_lst = []
                 for n in range(15):
                     ver_str = ver + str(n)
@@ -32,7 +32,7 @@ def update_check() -> str: ## The updated_check() will only work if subversion (
                             #print('last')
                 ver_github_lst = ver_github.split('.')
                 if int(ver_github_lst[1]) >= int(version_lst[1]):
-                    if int(ver_github_lst[2]) > int(version_lst[2]):
+                    if int(ver_github_lst[2]) >= int(version_lst[2]):
                         return ver_github
                     else:
                         return 'newer_version'
@@ -70,11 +70,11 @@ def update_simpie():
         answer = input('yes / no:')
         if answer == 'yes':
             return lookup('https://github.com/BotPolder/SimpieBot/raw/master')
-def print_lst_one_by_one(lstname: list,sidebyside: bool) -> str:
-    if sidebyside is False:
+def print_lst_one_by_one(lstname: list, way: str) -> str:
+    if way == 'with_enters':
         for lstelement in range(len(lstname)):
             print(lstname[lstelement])
-    if sidebyside is True:
+    if way == 'with_tabs':
         for lstelement in range(len(lstname)):
             try:
                 if len(lstname[lstelement]) < 15 and len(lstname[lstelement + 1]) < 15 and len(lstname[lstelement + 2]) < 15 and len(lstname[lstelement + 3]) < 15:
@@ -83,6 +83,9 @@ def print_lst_one_by_one(lstname: list,sidebyside: bool) -> str:
                     print(lstname[lstelement], '\t\t\t', lstname[lstelement + 1], '\t\t\t', lstname[lstelement + 2], '\t\t\t', lstname[lstelement + 3])
             except IndexError:
                 break
+    if way == 'no_style':
+        for lstelement in range(len(lstname)):
+            print(lstname[lstelement])
     return '\n'
 def install_checker(appname: str) -> bool:
     exelist = exeappwalker('names')
@@ -238,7 +241,8 @@ name = ''
 raw_lst_of_command = [
     'get user', 'show os', 'operating system', 'system info', 'stop', 'quit', 'show command', 'show commands',
     'help', 'open chrome', 'open firefox', 'open google', 'hi', 'hello', 'ni hao', 'show applications', 'show apps', 'list apps', 'list app',
-    'list programs', 'print', 'start', "google", "lookup", "search", "settings", 'check', 'install', 'back', 'devblog', 'check install', 'install check'
+    'list programs', 'print', 'start', "google", "lookup", "search", "settings", 'check', 'install', 'back', 'devblog', 'check install', 'install check',
+    'clear', 'read board', 'trello', 'discord'
 ]
 lst_of_command = [
     ''' \nIf anything is written inbetween [] it means it can be filled in by own desire (and even be kept open), 
@@ -246,17 +250,24 @@ lst_of_command = [
     Any text that is in () is just extra information.
     ''',
     'Okay here is a list of commands you can use:\n'
+    , '\n[[ USEFULL ]]'
+    , 'lookup [word or direct link] (will look words or links up on the internet)'
     , "open [program_name] (fast method only works for some apps)"
+    , "start [program_name] (slow method works for all apps)"
     , "show apps (gives you a list of all the applications installed on your device)"
-    , "system info (will tell you something more about your pc."
+    , "check install [program_name]"
+    , '\n[[ FUN ]]'
     , "print next (will ask for something to print)"
     , "print [word]"
+    , '\n[[ TECHNICAL ]]'
+    , "system info (will tell you something more about your pc."
     , "get user (will give you the current username and name of the device)"
-    , "check install [program_name]"
-    ,"start [program_name] (slow method works for all apps)"
+    , '\n[[ READ ABOUT THIS PROJECT ]]'
     , 'devblog (will print out the devblog)'
-    , 'lookup [word or direct link] (will look words or links up on the internet)'
-    , "\nsettings (customise me)", 'stop (or) quit (will shut me down)', 'help'
+    , 'read board (or) trello (will bring you to the trello board where you can read more about upcomming features and bug fixes)'
+    , 'discord (will take you to the discord "plaza" server where you can join the simpie community :)) )'
+    , '\n[[ IMPORTANT ]]'
+    , "settings (customise me)", 'stop (or) quit (will shut me down)', 'help', 'clear (will clean up your screen)'
 ]
 lst_of_settings_command = [
     "\n",
@@ -281,8 +292,8 @@ if operatingsystem == 'win32':
             update_simpie()
         else:
             print('Okay current version remains.')
-    elif info == 'newer_version':
-        print('Hi developer :)')
+    #elif info == 'newer_version':
+    #    print('Hi developer :)')
     elif info == 'internet_error':
         print('Seems like you are not connected to the internet. \nWant to check for an update?')
         answer = input('yes / no: ')
@@ -310,16 +321,17 @@ while True:
             print('The system name:',get_system_info(), '\nThe username:', username)
     if (command == 'show os' or command == 'operating system' or command == 'system info') and commandlst[-1] == 'command':
         import platform, socket
+        lst_of_syteminfo = []
         cpu = '\nProcessor: ' + platform.processor()
         ip4 = 'ip4: ' + socket.gethostbyname(socket.gethostname())
         lst_of_syteminfo.append(cpu)
         lst_of_syteminfo.append(ip4)
-        print_lst_one_by_one(lst_of_syteminfo, False)
+        print_lst_one_by_one(lst_of_syteminfo, 'no_style')
         print(checkos())
     if (command == 'stop' or command == 'quit') and commandlst[-1] == 'command':
         break
     if (command == 'show command' or command == 'show commands' or command == 'help') and commandlst[-1] == 'command':
-        print(print_lst_one_by_one(lst_of_command, False))
+        print(print_lst_one_by_one(lst_of_command, 'no_style'))
     if commandlst[0] == 'open'and commandlst[-1] == 'command':
         filename = command.split(' ')
         try:
@@ -336,7 +348,7 @@ while True:
             print("That is to bad anything I can help you with?")
             answer = input()
             if answer == 'yes':
-                print('Cool these are the commands I listen to.\n', lst_of_command)
+                print('Cool these are the commands I listen to.\n', print_lst_one_by_one(lst_of_command, 'no_style'))
             elif answer == 'no':
                 print('Okay you want me to shut down?')
                 answer = input()
@@ -347,7 +359,7 @@ while True:
         if namesboth == 'both' or namesboth == 'names':
             exelst_dict = exeappwalker(namesboth)
             if type(exelst_dict):
-                print_lst_one_by_one(exelst_dict, True)
+                print_lst_one_by_one(exelst_dict, 'with_tabs')
             else:
                 print(exeappwalker(namesboth))
         else:
@@ -415,7 +427,7 @@ while True:
                     except:
                         print('ERROR: pyshortcuts not installer') 
                 elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command, False))  
+                    print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))  
                 elif command == 'version':
                     info = update_check() 
                     if info[0:2] == '0.':
@@ -426,7 +438,7 @@ while True:
                         else:
                             print('Okay current version remains.')
                     elif info == 'latest':
-                        print('You have the latest version installed on your device')
+                        print('Latest version (', version, ') installed')
                     elif info == 'not_supported':
                         print('This function is not yet supported by your Operating System')
                     elif info == 'newer_version':
@@ -453,7 +465,7 @@ while True:
                 elif command == 'enable lob' or command == 'lob':
                     print('This function is not yet available for your operating system')
                 elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command, False))
+                    print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))
                 elif command == 'version':
                     print(version)
                 elif command == 'check update' or command == 'update':
@@ -492,36 +504,22 @@ while True:
                 devblog_list = devblog.split('\n')
                 first_devblog_element = str(devblog_list[0])
                 print('About what version would you like to read the devblog?')
-                print('Available devblog versions: 0.0.1 ->', update_check())
+                print('Available devblog versions: 0.0.1 ->', version)
                 answer = input('current / other / all: ')
                 if answer == 'all':
                     for n in range(len(devblog_list)):
                         print(devblog_list[n])
                         skip = True
                 if answer == 'current' and skip is False:
-                    dev_version = version
-                    if skip is False:
-                        version_key = 0
-                        version_1_key = 0
-                        for n in range(len(devblog_list)):
-                            version_str = 'Devblog: ver ' + str(dev_version)
-                            version_str_alt = 'Devblog ver ' + str(dev_version)
-                            version_str_1 = 'Devblog: ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
-                            version_str_1_alt = 'Devblog ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
-                            if version_str == devblog_list[n]:
-                                version_key = n
-                            if first_devblog_element[11] == 'Devblog ver' or  first_devblog_element[11] == 'Devblog ver' :
-                                version_key = n
-                            if version_str_1 == devblog_list[n]:
-                                version_1_key = n
-                            if version_str_1_alt == devblog_list[n]:
-                                version_1_key = n
-                        seperator = ' '
-                        devblog_str = seperator.join(devblog_list[version_key:version_1_key])
-                        print(devblog_str)
+                    devblog_list = devblog.split('Devblog: ver ')
+                    for current_github_version in devblog_list:
+                        if version == current_github_version[0:5]:
+                            print('\n', current_github_version)
                     skip = True
                 if answer != 'other' and answer != 'current' and answer != 'all' and skip is False:
-                    print("Sorry I didn't get thatt")
+                    print("Sorry I didn't get that \n")
+                    skip_initial_command = True
+                    skip = True
                 if answer == 'other' and skip is False:
                     print('type the numbers of the version one by one:')
                     dev_version = ''
@@ -545,29 +543,26 @@ while True:
                                     print('You can only put in one number.')
                 try:
                     if skip is False:
-                        version_key = 0
-                        version_1_key = 0
-                        for n in range(len(devblog_list)):
-                            version_str = 'Devblog: ver ' + str(dev_version)
-                            version_str_alt = 'Devblog ver ' + str(dev_version)
-                            version_str_1 = 'Devblog: ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
-                            version_str_1_alt = 'Devblog ver ' + dev_version[:-1] + str(int(dev_version[-1]) + 1)
-                            if version_str == devblog_list[n]:
-                                version_key = n
-                            if version_str_alt == devblog_list[n]:
-                                version_key = n
-                            if version_str_1 == devblog_list[n]:
-                                version_1_key = n
-                            if version_str_1_alt == devblog_list[n]:
-                                version_1_key = n
-                        seperator = ' '
-                        devblog_str = seperator.join(devblog_list[version_key:version_1_key])
-                        print(devblog_str)
+                        devblog_list = devblog.split('Devblog: ver ')
+                        for current_github_version in devblog_list:
+                            if dev_version == current_github_version[0:5]:
+                                print('\n', current_github_version)
                 except:
                     print("sorry I didn't get that")
                     skip_initial_command = True
         except:
             print('internet_error')
+    if command == 'clear':
+        import os
+        try:    
+            os.system("cls")
+        except:
+            print('Seems like this command does not work on you system.')
+    if command == 'read board' or command == 'trello':
+        lookup("https://trello.com/b/AFvBSXwj/simpiebot")
+    if commandlst[0] == 'discord':
+        print('Have fun and be polite :)')
+        lookup('https://discord.gg/pxKBbKM')
     if commandlst[-1] == 'command' and command not in raw_lst_of_command and commandlst[0:2] != ['check', 'install'] and commandlst[0:2] != ['print', 'next'] and commandlst[0] != 'print' and commandlst[0] != 'lookup' and commandlst[0] != 'open' and commandlst[0] != 'start':
         for gues_command in raw_lst_of_command:
             current_command_check = []

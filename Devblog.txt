@@ -87,3 +87,20 @@ I hope to get simpie working on the macOs platform soon.
 Oh yea I almoste dubbled the length of simpies source code too 596 lines :)
 And finally after writing the code for this huge update I can start learning for my exames. 
 Thank you for using my sofware. I hope you are enjoying Simpie.
+
+Devblog: ver 0.1.5
+Very small update for some annoying bugs and cleaned up some code / design. 
+Also added one new life improving command (clear) and the trello / read blog command and the discord command.
+Major optimization to the devblog command, the script for this command was a total mess
+so I really had to shorten it. By doing that I also fixed some weird bugs that came up.
+This command should now work 90% of the time, I just have to fix the back command that can
+be used on the devblog/other command to correct typos. (als works most of the time.)
+I added a new command that is accessible from the main command input. It is also listed in the
+command list (help). This command is called clear and will clean up all the text from older input.
+This so that you can clean up your terminal window.
+Fixed some minor bugs like the system info command that remembered the last list and appended the new
+information. And the help list will now be printed on seperate lines by simpie when asked.
+The trello / read blog command will take you to the trello board page where you can read more about upcomming features
+and bug fixes. The discord server is now open for any people that want to report bugs. At this point there is not yet
+a seperate channel for the simpie community but expect that one to appear in the future, here you will be able to report
+on bugs and ask for new features to be added. Please keep it civilized :))
