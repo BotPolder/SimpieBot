@@ -104,3 +104,39 @@ The trello / read blog command will take you to the trello board page where you 
 and bug fixes. The discord server is now open for any people that want to report bugs. At this point there is not yet
 a seperate channel for the simpie community but expect that one to appear in the future, here you will be able to report
 on bugs and ask for new features to be added. Please keep it civilized :))
+
+Devblog: ver 0.1.6
+Linux compatibility is here!
+Tested on the Pop!_os LTS 20.4 linux distribution. So I expect that ubuntu should work too.
+
+Commands that work on the linux distribution of SimpieBot.
+
+The linux edition of Simpie will also gues the name of the current user, and it will also gues the command if typed incorrectly.
+
+To open the current version of SimpieBot. 
+You have to open your terminal in the directory with the SimpieBot file (the one with the icon) and enter,
+./SimpieBot
+SimpieBot will launch in the same terminal window.
+
+I used pyinstaller to compile SimpieBot for linux. I wasn't able to make the file executable but it will work if you
+launch the bot from terminal, which is really not that hard to do. I suppose I havn't figuered out how to decently compile
+python programs. I found it really easy to do for windows (mostly because I really like .bat files). I haven't been able to 
+compile Simpie for mac but it runs really well on mac, but there is no defined executable for MacOS out yet. The SimpieSourceCode
+will run in any python interpreter that you put it into.
+Most of the commands that where already available in simpie 0.1.5 work just fine in the linux version. There are some commands
+that need some work. In the list below you will find what commands work and which ones don't. Chances are pretty high that the 
+bot will crash if you try any commands that are not supported on your OS.
+
+In the main tree of commands:
+lookup, print, print next, system info, get user, read board and discord.
+
+The commands in the main tree that are not yet available on linux.
+clear, start, shop apps, check install, devblog, 
+
+In the settings tree of commands:
+back, check update, version, stop / quit
+
+The commands in the settings tree that are not yet available on linux.
+read blog, update simpie,
+
+Thank you for using SimpieBot :)

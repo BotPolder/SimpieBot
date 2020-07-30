@@ -1,8 +1,15 @@
+#!/usr/bin/python3
+# The command above is for linux specific and should be ignored by all other operatingsystems!
 #-------------------#-------------------System startup
-import sys, os, ctypes, urllib.request, time, requests
-from winreg import *
-from bs4 import BeautifulSoup
+import sys
 operatingsystem = sys.platform
+try:
+    if operatingsystem != 'linux':    
+        import os, ctypes, urllib.request, time, requests
+        from winreg import *
+        from bs4 import BeautifulSoup
+except ModuleNotFoundError:
+    print('\nSome packages could not be loaded because of your operating system. \n')
 version = '0.1.5'
 version_lst = version.split('.')
 skip_initial_command = False
@@ -129,7 +136,10 @@ def startapp(appname: str):
             answer = 'Successfully started' + Appname_with_extension + '!'
             return answer
         except FileExistsError:
-            print("Something is missing, maybe it's my programmer's brain.")     
+            print("Something is missing, maybe it's my programmer's brain.")  
+    elif operatingsystem == 'linux':
+        Appname_with_extension = appname + '.desktop'
+        print(Appname_with_extension)
 def get_key(val): 
     path_dict = dict(exeappwalker('both'))
     for key, value in path_dict.items(): 
@@ -279,6 +289,12 @@ lst_of_settings_command = [
     , 'read blog (will open the devblog of this project. Here your can read all about the latest updates.)'
 ]
 lst_of_syteminfo = []
+if operatingsystem == 'linux':
+    import getpass
+    username = getpass.getuser()
+    answer = 'Hi ' + username + '!' 
+    print(answer)
+    print('Type help to see what functions you can use in this program. \n')
 if operatingsystem == 'win32':
     username = os.getlogin()
     answer = 'Hi ' + username + '!' 
@@ -302,7 +318,7 @@ if operatingsystem == 'win32':
     elif info != 'latest' and info[0:2] != '0.' and info != 'newer_version' and info != 'network_error':
         print(info)
 while True:
-    if operatingsystem == 'darwin':
+    if operatingsystem != 'win32' and operatingsystem != 'linux':
         if name == '':
             print('Hi my name is Simpie')
             name = input('What is your name? ')
@@ -318,6 +334,8 @@ while True:
         if operatingsystem == 'darwin':
             print('The system name: ',get_system_info(), '\n')
         if operatingsystem == 'win32':
+            print('The system name:',get_system_info(), '\nThe username:', username)
+        if operatingsystem == 'linux':
             print('The system name:',get_system_info(), '\nThe username:', username)
     if (command == 'show os' or command == 'operating system' or command == 'system info') and commandlst[-1] == 'command':
         import platform, socket
@@ -481,9 +499,18 @@ while True:
                 #    path = "C:/Users"
                 #    path = os.path.realpath(path)
                 #    os.startfile(path)
-            # write short cut to C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
-            # elif command == 'install bottie' or command == 'install':
-            # a shortcut will be made
+            if operatingsystem == 'linux':
+                command = input("Change is good: ")
+                if command == 'back':
+                    break
+                elif command == 'enable lob' or command == 'lob':
+                    print('This function is not yet available for your operating system')
+                elif command == 'help':
+                    print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))
+                elif command == 'version':
+                    print(version)
+                elif command == 'check update' or command == 'update':
+                    lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
     if (commandlst[0] == "google" or commandlst[0] == "lookup" or commandlst[0] == "search") and commandlst[-1] == 'command':
         if len(commandlst) > 2:
             command = commandlst[1:-1]
