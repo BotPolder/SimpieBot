@@ -14,6 +14,11 @@ version = '0.1.5'
 version_lst = version.split('.')
 skip_initial_command = False
 #-------------------#-------------------Definitions
+#def gettime(zone: str, setting: str):
+#    import datetime
+#    current_time = datetime.datetime.now()
+#    current_time.setting
+#    return current_time
 def update_check() -> str: ## The updated_check() will only work if subversion (z) in (x.y.z) is not higher than 15. ##and will only work for alpha (0.x.y)
     if operatingsystem == 'win32':   
         url = 'https://github.com/BotPolder/SimpieBot/tree/master/Installer'
@@ -261,6 +266,7 @@ lst_of_command = [
     ''',
     'Okay here is a list of commands you can use:\n'
     , '\n[[ USEFULL ]]'
+    , "time (will display current time)"
     , 'lookup [word or direct link] (will look words or links up on the internet)'
     , "open [program_name] (fast method only works for some apps)"
     , "start [program_name] (slow method works for all apps)"
@@ -330,6 +336,8 @@ while True:
     skip_initial_command = False
     commandlst = command.split(' ')
     commandlst.append('command')
+#    if (command == 'time') and commandlst[-1] == 'command':
+#        print(gettime('CET', 'hour'))
     if command == 'get user': #and commandlst[-1] == command:
         if operatingsystem == 'darwin':
             print('The system name: ',get_system_info(), '\n')
