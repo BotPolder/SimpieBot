@@ -116,8 +116,9 @@ def install_checker(appname: str) -> bool:
         if Appname_with_extension in exelist:
             return True
         else:
-            print(exelist)
-            return False
+            return exelist
+    return False
+        
 def startapp(appname: str):
     import subprocess
     if operatingsystem == 'win32':
@@ -425,8 +426,11 @@ while True:
             applst = commandlst[2::]
             appname = seperator.join(applst)
             appname = appname[0:-8] ## and here i have to delete the dumb thing so that it skips the last 8 dumb string kars. Damnit
-        if install_checker(appname) is True:
+        installed = install_checker(appname)
+        if installed is True:
             print('The application is installed')
+        elif installed is False:
+            print('This feature is not yet implemented on your os.')
         else:
             print(install_checker(appname))
             print("\nSeems like this application is not installed, \nare your sure you typed it's name right? \nYou could look for its name by pressing ctrl + f and then typing the name.")
