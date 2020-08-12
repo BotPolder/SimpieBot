@@ -1,6 +1,23 @@
 Place the file source code and the .ico in desktop. (or any file you wish)
-shift + right click the folde and open in powershell.
+shift + right click the folder and open in powershell.
+if this error appears:
+
+pyinstaller : The term 'pyinstaller' is not recognized as the name of a       
+cmdlet, function, script file, or operable program. Check the spelling of     
+the name, or if a path was included, verify that the path is correct and try  again.                                                                        
+At line:1 char:1                                                              
++ pyinstaller -n SimpieBot -i "bot.ico" -F SimpieSourceCode.py                
++ ~~~~~~~~~~~                                                                     
++ CategoryInfo          : ObjectNotFound: (pyinstaller:String) [], Comma     
+ndNotFoundException                                                            
++ FullyQualifiedErrorId : CommandNotFoundException  
+
+use: 
+pip install pyinstaller
+
 pyinstaller -n SimpieBot -i "bot.ico" -F SimpieSourceCode.py
+or with the new seperated sourcecode:
+pyinstaller -n SimpieBot -i "bot.ico" -F SimpieWin32.py
 -F is for a single file
 the proces can take up to 2 min so give it some time.
 after it is done it will show the normal powershell command like this one:

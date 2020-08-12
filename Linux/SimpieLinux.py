@@ -10,7 +10,7 @@ try:
         from bs4 import BeautifulSoup
 except ModuleNotFoundError:
     print('\nSome packages could not be loaded because of your operating system. \n')
-version = '0.1.6'
+version = '0.1.7'
 version_lst = version.split('.')
 skip_initial_command = False
 #-------------------#-------------------Definitions
@@ -20,68 +20,12 @@ skip_initial_command = False
 #    current_time.setting
 #    return current_time
 def update_check() -> str: ## The updated_check() will only work if subversion (z) in (x.y.z) is not higher than 15. ##and will only work for alpha (0.x.y)
-    if operatingsystem == 'win32':   
-        url = 'https://github.com/BotPolder/SimpieBot/tree/master/Installer'
-        try:
-            response = requests.get(url)
-            check = str(response)
-            if check == '<Response [200]>':
-                soup = BeautifulSoup(response.text, "html.parser")
-                set_of_span = set(soup.findAll("span", {"class": "css-truncate css-truncate-target"}))
-                str_of_span = str(set_of_span)
-                devblog_words = str_of_span.split()
-                ver_github = '0.0.0'
-                ver = '0.1.'
-                ver_lst = []
-                for n in range(15):
-                    ver_str = ver + str(n)
-                    if ver_str in devblog_words:
-                        ver_github = ver_str
-                        ver_lst = ver_str.split('.')
-                        if ver_str == version:
-                            return 'latest'
-                        #if n == 14:
-                            #print('last')
-                ver_github_lst = ver_github.split('.')
-                if int(ver_github_lst[1]) >= int(version_lst[1]):
-                    if int(ver_github_lst[2]) >= int(version_lst[2]):
-                        return ver_github
-                    else:
-                        return 'newer_version'
-                else:
-                    return 'newer_version'
-        except:
-            return 'internet_error'
-    else:
-        return 'not_supported'
+    return 'not_supported'
 def update_simpie():
-    if operatingsystem == 'win32':
-        with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
-            Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
-        downloads_installer = Downloads + "/Simpie Installer.msi"
-        import pathlib
-        installer = pathlib.Path(downloads_installer)
-        if installer.exists ():
-            print ("\nFile exist \nDeleting old installer")
-            os.unlink(downloads_installer) 
-            print('Downloading latest version. \nThis should not take longer than a minute. -> ', end='')
-            urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
-            print('Download compleet -> ', end='')
-        else:
-            print ("File not exist")
-            print('Beginning file download from Github repo')
-            urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/Installer/Simpie%20Installer.msi", downloads_installer)
-            print('Download compleet')
-        print('Running installer')
-        try:
-            return os.startfile(downloads_installer)
-        except FileNotFoundError:
-            return 'Download failed'
-    else:
-        print('Seems like your Operating System does not yet support this function. \nWould you like to go to the download file?')
-        answer = input('yes / no:')
-        if answer == 'yes':
-            return lookup('https://github.com/BotPolder/SimpieBot/raw/master')
+    print('Seems like your Operating System does not yet support this function. \nWould you like to go to the download file?')
+    answer = input('yes / no:')
+    if answer == 'yes':
+        return lookup('https://github.com/BotPolder/SimpieBot/raw/master')
 def print_lst_one_by_one(lstname: list, way: str) -> str:
     if way == 'with_enters':
         for lstelement in range(len(lstname)):
@@ -100,24 +44,9 @@ def print_lst_one_by_one(lstname: list, way: str) -> str:
             print(lstname[lstelement])
     return '\n'
 def install_checker(appname: str) -> bool:
-    exelist = exeappwalker('names')
-    exelist.sort()
-    if operatingsystem == 'win32':
-        Exename_with_extension = appname + '.exe'
-        print(Exename_with_extension)
-        if Exename_with_extension in exelist:
-            return True
-        else:
-            return exelist
-    elif operatingsystem == 'darwin':
-        Appname_with_extension = appname + '.app'
-        Appname_with_extension = appname[0].capitalize() + appname[1::] + '.app'
-        print('The full name of the app:', Appname_with_extension)
-        if Appname_with_extension in exelist:
-            return True
-        else:
-            print(exelist)
-            return False
+    #exelist = exeappwalker('names')
+    #exelist.sort()
+    return 'not_supported' ## will give errors if not fixed.
 def startapp(appname: str):
     import subprocess
     if operatingsystem == 'win32':
@@ -152,18 +81,7 @@ def get_key(val):
             return key 
     return "Seems like this Program is not installed. \nAre you sure you typed it right?"
 def checkos():
-    if operatingsystem == 'win32':
-        winversion = sys.getwindowsversion()
-        winversion = str(winversion)
-        versionlst = winversion.split(',')
-        answer = 'This device is running Windows, Extra info:' + versionlst[2] + versionlst[3] + versionlst[4] + '\nGood choice'
-        return answer
-    elif operatingsystem == 'darwin':
-        import platform
-        macversion = platform.mac_ver()
-        return "This device is running MacOs \n Hmm you are one of those, it's okay I forgive you."
-    else:
-        return 'Seems like you are running something fishy'
+    return 'Seems like you are running something fishy'
 def printthis(woord: str) -> str:
     return woord
 def exeappwalker(answer: str):
@@ -171,73 +89,40 @@ def exeappwalker(answer: str):
     from os import walk
     exelist = []
     program_info = {}
-    if operatingsystem == 'win32':
-        programfiles = 'C:\Program Files (x86)'
-        if answer == 'names':
-            for (dirpath, dirnames, filenames) in walk(programfiles):
-                for n in range(len(filenames)):
-                    bestand = filenames[n]
-                    if bestand[-4:] == '.exe':
-                        exelist.append(bestand)
-            return exelist
-        elif answer == 'both':
-            for (dirpath, dirnames, filenames) in walk(programfiles):
-                for n in range(len(filenames)):
-                    bestand = filenames[n]
-                    if bestand[-4:] == '.exe':
-                        if dirpath in program_info:
-                            program_info[dirpath].append(bestand)
-                        else:
-                            program_info[dirpath] = [bestand]
-            return program_info
-    if operatingsystem == 'darwin':
-        programfiles = '/Applications'
-        if answer == 'names':
-            for root, dirs, files in os.walk(programfiles):
-                for element in dirs:
-                    if element[-4:] == '.app':
-                        exelist.append(element)
-            return exelist
-        elif answer == 'both':
-            for root, dirs, files in os.walk(programfiles):
-                for element in dirs:
-                    if element[-4:] == '.app':
-                        if root in program_info:
-                            program_info[root].append(element)
-                        else:
-                            program_info[root] = [element]
-            return program_info
-        else:
-            return 'That is not a command known for this function, try "names" or "both"'
+    ## the commands that will have to be used in this function will be like those used on MacOS.
+    ##if operatingsystem == 'darwin':
+    ##    programfiles = '/Applications'
+    ##    if answer == 'names':
+    ##        for root, dirs, files in os.walk(programfiles):
+    ##            for element in dirs:
+    ##                if element[-4:] == '.app':
+    ##                    exelist.append(element)
+    ##        return exelist
+    ##    elif answer == 'both':
+    ##        for root, dirs, files in os.walk(programfiles):
+    ##            for element in dirs:
+    ##                if element[-4:] == '.app':
+    ##                    if root in program_info:
+    ##                        program_info[root].append(element)
+    ##                    else:
+    ##                        program_info[root] = [element]
+    ##        return program_info
+    ##    else:
+    ##        return 'That is not a command known for this function, try "names" or "both"'
 def open(porgram_name: str):
-    import subprocess
-    if operatingsystem == 'win32':
-        print('Trying to open', porgram_name)
-        if porgram_name == 'firefox' or porgram_name == 'chrome':    
-            try:
-                if porgram_name == "firefox":
-                    subprocess.Popen(['C:\Program Files\Mozilla Firefox\\firefox.exe', '-new-tab'])
-                if porgram_name == 'chrome' or porgram_name == 'google':
-                    subprocess.Popen(['C:\Program Files (x86)\Google\Chrome\Application\\chrome.exe', '-new-tab'])
-                    return 'Successfully started Google chrome!'
-            except FileNotFoundError:
-                return 'Seems like this program is not installed.'
-        else:
-            answer = 'Opening "' + porgram_name + '" is not supported by the command "open". \nTry again with: start ' + porgram_name
-            return answer
-    elif operatingsystem == 'darwin':
-        import subprocess
-        if porgram_name == "google" or porgram_name ==  "browser" or porgram_name == "chrome":
-            try:
-                subprocess.call(["/usr/bin/open", "-W", "-n", "-a", "/Applications/Google chrome.app"])
-                return 'Successfully started Google chrome!'
-            except FileNotFoundError:
-                return 'Seems like this program is not installed.'
-        else:
-            answer = 'Opening "' + porgram_name + '" is not supported by the command "open". \nTry again with: start ' + porgram_name
-            return answer
-    else:
-        return 'This command is not yet available on your operating system.'
+    ##import subprocess
+    ##elif operatingsystem == 'darwin':
+    ##    import subprocess
+    ##    if porgram_name == "google" or porgram_name ==  "browser" or porgram_name == "chrome":
+    ##        try:
+    ##            subprocess.call(["/usr/bin/open", "-W", "-n", "-a", "/Applications/Google chrome.app"])
+    ##            return 'Successfully started Google chrome!'
+    ##        except FileNotFoundError:
+    ##            return 'Seems like this program is not installed.'
+    ##    else:
+    ##        answer = 'Opening "' + porgram_name + '" is not supported by the command "open". \nTry again with: start ' + porgram_name
+    ##        return answer
+    return 'This command is not yet available on your operating system.'
 def get_system_info():
     import platform
     import socket
@@ -301,36 +186,7 @@ if operatingsystem == 'linux':
     answer = 'Hi ' + username + '!' 
     print(answer)
     print('Type help to see what functions you can use in this program. \n')
-if operatingsystem == 'win32':
-    username = os.getlogin()
-    answer = 'Hi ' + username + '!' 
-    print(answer)
-    print('Type help to see what functions you can use in this program. \n')
-    info = update_check() 
-    if info[0:2] == '0.':
-        print('There is a new version available would you like to update? \nCurrent version: ', version, '\nNewer version: ', info)
-        answer = input('yes / no: ')
-        if answer == 'yes':
-            update_simpie()
-        else:
-            print('Okay current version remains.')
-    #elif info == 'newer_version':
-    #    print('Hi developer :)')
-    elif info == 'internet_error':
-        print('Seems like you are not connected to the internet. \nWant to check for an update?')
-        answer = input('yes / no: ')
-        if answer == 'yes':
-            lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
-    elif info != 'latest' and info[0:2] != '0.' and info != 'newer_version' and info != 'network_error':
-        print(info)
 while True:
-    if operatingsystem != 'win32' and operatingsystem != 'linux':
-        if name == '':
-            print('Hi my name is Simpie')
-            name = input('What is your name? ')
-            answer = 'Hi ' + name + '!'
-            print(answer)
-            print('Type help to see what functions you can use in this program.')
     if skip_initial_command is False:
         command = input('Your command: ')
     skip_initial_command = False
@@ -339,12 +195,7 @@ while True:
 #    if (command == 'time') and commandlst[-1] == 'command':
 #        print(gettime('CET', 'hour'))
     if command == 'get user': #and commandlst[-1] == command:
-        if operatingsystem == 'darwin':
-            print('The system name: ',get_system_info(), '\n')
-        if operatingsystem == 'win32':
-            print('The system name:',get_system_info(), '\nThe username:', username)
-        if operatingsystem == 'linux':
-            print('The system name:',get_system_info(), '\nThe username:', username)
+        print('The system name:',get_system_info(), '\nThe username:', username)
     if (command == 'show os' or command == 'operating system' or command == 'system info') and commandlst[-1] == 'command':
         import platform, socket
         lst_of_syteminfo = []
@@ -381,22 +232,23 @@ while True:
                 if answer == 'yes':
                     break
     if (command == 'show applications' or command == 'show apps' or command == 'list apps' or command == 'list app' or command == 'list programs')and commandlst[-1] == 'command': 
-        namesboth = input('Should I just print the names or also the directories? \nType names or both: ')
-        if namesboth == 'both' or namesboth == 'names':
-            exelst_dict = exeappwalker(namesboth)
-            if type(exelst_dict):
-                print_lst_one_by_one(exelst_dict, 'with_tabs')
-            else:
-                print(exeappwalker(namesboth))
-        else:
-            print("Sorry I did't get that, just the names of both?")
-            namesboth = input('names or both? ')
-            if namesboth == 'both' or namesboth == 'names':
-                print(exeappwalker(namesboth))
-            else:
-                print("Sorry I didn't get that, Do you just want the names or also the directroies?")
-                namesboth = input('names or both? ')
-                print(exeappwalker(namesboth))
+        #namesboth = input('Should I just print the names or also the directories? \nType names or both: ')
+        #if namesboth == 'both' or namesboth == 'names':
+        #    exelst_dict = exeappwalker(namesboth)
+        #    if type(exelst_dict):
+        #        print_lst_one_by_one(exelst_dict, 'with_tabs')
+        #    else:
+        #        print(exeappwalker(namesboth))
+        #else:
+        #    print("Sorry I did't get that, just the names of both?")
+        #    namesboth = input('names or both? ')
+        #    if namesboth == 'both' or namesboth == 'names':
+        #        print(exeappwalker(namesboth))
+        #    else:
+        #        print("Sorry I didn't get that, Do you just want the names or also the directroies?")
+        #        namesboth = input('names or both? ')
+        #        print(exeappwalker(namesboth))
+        print('This command is not yet supported on your operating system.')
     if commandlst[0] == 'print'and commandlst[-1] == 'command':
         if command[6:10] == 'next':
             woord = input('Type here what I have to print: ')
@@ -433,92 +285,17 @@ while True:
     if commandlst[0] == "settings"and commandlst[-1] == 'command':
         print('\nHere you can customise me. To see what types of settings you can change type help. \nTo leave this settings tree just type back.')
         while command != 'back':
-            if operatingsystem == 'win32':
-                command = input("Change is good: ")
-                if command == 'back':
-                    break
-                elif command == 'read blog' or command == 'devblog':
-                    lookup('https://raw.githubusercontent.com/BotPolder/SimpieBot/master/Devblog.txt')
-                if command == 'enable lob' or command == 'lob':
-                    try:
-                        from winreg import *
-                        with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
-                            Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
-                        downloads_icon = Downloads + "/bot.ico"
-                        urllib.request.urlretrieve("https://github.com/BotPolder/SimpieBot/raw/master/bot.ico", downloads_icon)
-                        from pyshortcuts import make_shortcut
-                        make_shortcut('C:\Program Files (x86)\\BotPolder\Simpie\BotPolder\SimpieBot.exe', name='SimpieBot', icon=downloads_icon)
-                        #make_shortcut('C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup', name='SimpieBot', icon=downloads_icon)
-                        #C:\Program Files (x86)\BotPolder\Simpie\BotPolder
-                    except:
-                        print('ERROR: pyshortcuts not installer') 
-                elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))  
-                elif command == 'version':
-                    info = update_check() 
-                    if info[0:2] == '0.':
-                        print('\nThere is a new version available would you like to update? \nCurrent version', version, '\nNewer version: ', info)
-                        answer = input('yes / no: ')
-                        if answer == 'yes':
-                            update_simpie()
-                        else:
-                            print('Okay current version remains.')
-                    elif info == 'latest':
-                        print('Latest version (', version, ') installed')
-                    elif info == 'not_supported':
-                        print('This function is not yet supported by your Operating System')
-                    elif info == 'newer_version':
-                        print('Hi developer :) \nYou are on:\tStaging Branch: ', version)
-                    elif info == 'internet_error':
-                        print('Seems like you are not connected to the internet. Want to check or leave it for now?')
-                        answer = input('Want to check if the downloadsite is online: ')
-                        if answer == 'yes':
-                            lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
-                    else:
-                        print(info)
-                        print("Could not check for new version of me online. \nAre you sure you have internet?")
-                        answer = input('Want to check if te site is online: ')
-                        if answer == 'yes':
-                            lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
-                elif command == 'check update' or command == 'update':
-                    lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
-                elif command == 'update simpie':
-                    update_simpie()
-            if operatingsystem == 'darwin':
-                command = input("Change is good: ")
-                if command == 'back':
-                    break
-                elif command == 'enable lob' or command == 'lob':
-                    print('This function is not yet available for your operating system')
-                elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))
-                elif command == 'version':
-                    print(version)
-                elif command == 'check update' or command == 'update':
-                    lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
-                #elif command == 'update simpie':
-                #    import urllib.request
-                #    print('Beginning file download')
-                #    url = 'http://'
-                #    downloadfile = '/Users/'+ username +'/Downloads/.app'
-                #    urllib.request.urlretrieve(url, '/Users/''/Downloads/.app')
-                #elif command == 'desktop':
-                #    import os
-                #    path = "C:/Users"
-                #    path = os.path.realpath(path)
-                #    os.startfile(path)
-            if operatingsystem == 'linux':
-                command = input("Change is good: ")
-                if command == 'back':
-                    break
-                elif command == 'enable lob' or command == 'lob':
-                    print('This function is not yet available for your operating system')
-                elif command == 'help':
-                    print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))
-                elif command == 'version':
-                    print(version)
-                elif command == 'check update' or command == 'update':
-                    lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
+            command = input("Change is good: ")
+            if command == 'back':
+                break
+            elif command == 'enable lob' or command == 'lob':
+                print('This function is not yet available for your operating system')
+            elif command == 'help':
+                print(print_lst_one_by_one(lst_of_settings_command, 'no_style'))
+            elif command == 'version':
+                print(version)
+            elif command == 'check update' or command == 'update':
+                lookup('https://github.com/BotPolder/SimpieBot/tree/master/Installer')
     if (commandlst[0] == "google" or commandlst[0] == "lookup" or commandlst[0] == "search") and commandlst[-1] == 'command':
         if len(commandlst) > 2:
             command = commandlst[1:-1]

@@ -6,7 +6,7 @@ Bot can also print a list of all .exe installed in C:\Program Files\\.
 Some simple if statements are used to give bot to possibility to respond to hi. 
 An else statement will make clear that the question / command is not recognized by Simpie. 
 Simpie is still in an early phase, and is not more intelligent than his friend SimpleBot. 
-Simpie is written in Python instead of the Batch used to write Simplebot
+Simpie is written in Python instead of the Batch used to write Simplebot.
 
 Devblog: ver 0.1.0
 Simpie has now been compiled to an alpha state executable. 
@@ -16,7 +16,7 @@ A funny little icon was also added to the repository. This will be the icon of S
 The original png was also included in this update.
 
 Devblog: ver 0.1.1
-Getting simpie crosplatform compiled
+Getting simpie crossplatform compiled.
 I had some issues with pyinstaller. 
 Pyinstaller worked fine for my windows version of Simpie. 
 But whilst trying to get it to work for Mac (get Simpie on the MacOS platform) 
@@ -140,3 +140,20 @@ The commands in the settings tree that are not yet available on linux.
 read blog, update simpie,
 
 Thank you for using SimpieBot :)
+
+Devblog: ver 0.1.7
+The big split, respect the operating systems.
+In my effort to create a sourcecode that is compatible with all operatingsystems. I have recentrly found out that there are some
+really complex issues that I had to overcome. That is why I have dicided to leave that idea for future progams and split the sourcecode
+to keep operating software seperated. This will keep the sourcecode simple whilst improving performance. I decided to act now because the longer
+and complexer the sourcecode gets the longer it would take to split the code up. I will keep the original sourcecode in an archive.
+I know that one day it will be easier to combine the operatingsystems back into one code. This will probably be at the same time when
+add a GUI. The big issue came up when MacOS disliked the command required to run Simpie in the Linux terminal. Seems like these operating
+systems strongly disliked sharing code. This issue lays heavy on my heart.
+
+I expect lots of errors to appear in the 0.1.7 version of SimpieBot. 
+I will however compile Simpie for windows, linux and MacOS in an upcomming patch for 0.1.7. 
+This way Simpie can be tested to the full extent on all supported platforms, 
+and this will ofcourse increase the chance that all issues will be patched in the next update. I will see to it.
+
+There where no new features added in this update. Appart from the expected yet marginal performance increase.
